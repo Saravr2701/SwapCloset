@@ -1,0 +1,16 @@
+package es.safareyes.swapcloset.modelos;
+
+public enum TallaZapatos {
+    T35,
+    T36,
+    T37,
+    T38,
+    T39,
+    T40,
+    T41,
+    T42,
+    T43,
+    T44,
+    T45,
+    T46
+}
