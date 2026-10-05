@@ -4,19 +4,19 @@
 
 ## Características Principales
 
-- 👤 **Gestión de Usuarios y Perfiles:** 
+- **Gestión de Usuarios y Perfiles:** 
   - Control de accesos por roles (`ADMINISTRADOR`, `USUARIO`, `MODERADOR`).
   - Configuración del perfil con tallas de ropa/calzado, biografía y reputación basada en valoraciones.
-- 👕 **Gestión del Armario Virtual:**
+- **Gestión del Armario Virtual:**
   - Publicación y catálogo de prendas con fotos, marcas, tallas, categorías y condiciones.
   - Opciones para habilitar o deshabilitar disponibilidad para **préstamo** o **intercambio**.
-- 🎨 **Preferencias y Estilos:** Vinculación de estilos de moda al perfil del usuario.
-- 💬 **Mensajería Interna:** Comunicación entre usuarios para la coordinación de intercambios y préstamos.
-- 🔔 **Notificaciones:** Sistema de alertas para solicitudes de préstamos, intercambios y recordatorios de devolución.
+- **Preferencias y Estilos:** Vinculación de estilos de moda al perfil del usuario.
+- **Mensajería Interna:** Comunicación entre usuarios para la coordinación de intercambios y préstamos.
+- **Notificaciones:** Sistema de alertas para solicitudes de préstamos, intercambios y recordatorios de devolución.
 
 ---
 
-## 🛠️ Tecnologías Utilizadas
+## Tecnologías Utilizadas
 
 - **Lenguaje:** Java 17+
 - **Framework:** Spring Boot 3.x
@@ -27,7 +27,7 @@
 
 ---
 
-## 🗄️ Modelo de Base de Datos
+## Modelo de Base de Datos
 
 El sistema se apoya en un modelo relacional en **PostgreSQL** compuesto por las siguientes entidades clave:
 
@@ -40,7 +40,7 @@ El sistema se apoya en un modelo relacional en **PostgreSQL** compuesto por las 
 
 ---
 
-## 🚀 Instalación y Configuración
+## Instalación y Configuración
 
 ### Prerrequisitos
 
