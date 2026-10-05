@@ -1,6 +1,6 @@
 package es.safareyes.swapcloset;
 
-import es.safareyes.swapcloset.modelos.Categorias;
+import es.safareyes.swapcloset.modelos.Categoria;
 import es.safareyes.swapcloset.repositorios.ICategoriaRepository;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,6 +17,6 @@ public class TestCategoria {
 
     @Test
     void consultarCategoria() {
-        List<Categorias> todos = repository.findAll();
+        List<Categoria> todos = repository.findAll();
     }
 }
