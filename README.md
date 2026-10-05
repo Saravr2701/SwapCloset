@@ -1,7 +1,5 @@
 **SwapCloset** es un proyecto desarrollado en **Spring Boot** para la gestión de un armario virtual colaborativo. La plataforma permite a los usuarios dar una segunda vida a su ropa mediante la publicación, intercambio y préstamo de prendas de vestir, fomentando la moda sostenible.
 
----
-
 ## Características Principales
 
 - **Gestión de Usuarios y Perfiles:** 
@@ -14,8 +12,6 @@
 - **Mensajería Interna:** Comunicación entre usuarios para la coordinación de intercambios y préstamos.
 - **Notificaciones:** Sistema de alertas para solicitudes de préstamos, intercambios y recordatorios de devolución.
 
----
-
 ## Tecnologías Utilizadas
 
 - **Lenguaje:** Java 17+
@@ -25,7 +21,6 @@
 - **Gestor de Dependencias:** Apache Maven
 - **Librerías Adicionales:** Lombok
 
----
 
 ## Modelo de Base de Datos
 
@@ -38,7 +33,6 @@ El sistema se apoya en un modelo relacional en **PostgreSQL** compuesto por las 
 - `Mensajes`: Chat entre usuarios.
 - `Notificaciones`: Historial de alertas del sistema.
 
----
 
 ## Instalación y Configuración
 
