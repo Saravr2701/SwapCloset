@@ -1,6 +1,7 @@
 package es.safareyes.swapcloset;
 
 import es.safareyes.swapcloset.modelos.Perfil;
+import es.safareyes.swapcloset.repositorios.ConsultaPerfilProyeccion;
 import es.safareyes.swapcloset.repositorios.IPerfilRepository;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,7 +17,12 @@ public class TestPerfil {
     private IPerfilRepository repository;
 
     @Test
-    void consultarUsuarios() {
+    void consultarPerfilCompleto() {
         List<Perfil> todos = repository.findAll();
+    }
+
+    @Test
+    void consultarPerfil() {
+        List<ConsultaPerfilProyeccion> todos = repository.obtenerPerfil();
     }
 }

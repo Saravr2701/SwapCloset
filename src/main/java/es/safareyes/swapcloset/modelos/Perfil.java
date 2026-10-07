@@ -58,12 +58,6 @@ public class Perfil {
     @Column(name = "talla_camiseta", nullable = false)
     private TallaCamiseta tallaCamiseta;
 
-    @Column(name = "reputacion")
-    private Double reputacion;
-
-    @Column(name = "num_valoraciones")
-    private Integer numValoraciones;
-
     @ManyToMany(mappedBy = "emisores", fetch = FetchType.LAZY)
     private Set<Mensaje> mensajesEnviados = new HashSet<>();
 

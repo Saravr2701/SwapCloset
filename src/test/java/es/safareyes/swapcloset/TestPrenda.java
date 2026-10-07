@@ -1,6 +1,7 @@
 package es.safareyes.swapcloset;
 
 import es.safareyes.swapcloset.modelos.Prenda;
+import es.safareyes.swapcloset.repositorios.ConsultaPrendasPaginadasProyeccion;
 import es.safareyes.swapcloset.repositorios.IPrendaRepository;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,7 +17,12 @@ public class TestPrenda {
     private IPrendaRepository repository;
 
     @Test
-    void consultarUsuarios() {
+    void consultarPrendas() {
         List<Prenda> todos = repository.findAll();
+    }
+
+    @Test
+    void consultarPrendasPaginadas() {
+        List<ConsultaPrendasPaginadasProyeccion> pagina = repository.obtenerPrendasPaginadas();
     }
 }

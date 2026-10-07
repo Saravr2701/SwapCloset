@@ -55,7 +55,7 @@ public class Prenda {
     @Enumerated(EnumType.STRING)
     @ManyToOne (fetch = FetchType.LAZY)
     @JoinColumn(name = "id_categorias", nullable = false)
-    private Categoria categorias;
+    private Categoria categoria;
 
     @OneToMany(mappedBy = "prenda", fetch = FetchType.LAZY)
     private Set<Foto> fotos = new HashSet<>();
