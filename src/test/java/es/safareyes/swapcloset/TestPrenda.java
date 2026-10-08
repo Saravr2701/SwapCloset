@@ -1,5 +1,6 @@
 package es.safareyes.swapcloset;
 
+import es.safareyes.swapcloset.dto.InformePublicaciones;
 import es.safareyes.swapcloset.modelos.Prenda;
 import es.safareyes.swapcloset.repositorios.ConsultaPrendasCompletasProyeccion;
 import es.safareyes.swapcloset.repositorios.ConsultaPrendasPaginadasProyeccion;
@@ -30,5 +31,10 @@ public class TestPrenda {
     @Test
     void consultarPrendasCompletas() {
         List<ConsultaPrendasCompletasProyeccion> pagina = repository.obtenerPrendasCompletas();
+    }
+
+    @Test
+    void obtenerInformePublicaciones() {
+        List<InformePublicaciones> pagina = repository.obtenerInformePublicaciones();
     }
 }

@@ -1,5 +1,6 @@
 package es.safareyes.swapcloset.repositorios;
 
+import es.safareyes.swapcloset.dto.InformePublicaciones;
 import es.safareyes.swapcloset.modelos.Prenda;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
@@ -53,4 +54,24 @@ public interface IPrendaRepository extends JpaRepository<Prenda, Integer> {
                     "ORDER BY pr.fecha_publicacion DESC",
             nativeQuery = true)
     List<ConsultaPrendasCompletasProyeccion> obtenerPrendasCompletas();
+
+    @Query(nativeQuery = true, value =
+            "SELECT " +
+                    "    TO_CHAR(actividad.fecha, 'YYYY-MM') AS mes, " +
+                    "    SUM(actividad.publicaciones) AS publicaciones, " +
+                    "    SUM(actividad.intercambios) AS intercambios, " +
+                    "    SUM(actividad.prestamos) AS prestamos " +
+                    "FROM ( " +
+                    "    SELECT fecha_publicacion AS fecha, 1 AS publicaciones, 0 AS intercambios, 0 AS prestamos " +
+                    "    FROM prenda " +
+                    "    UNION ALL " +
+                    "    SELECT fecha_creacion AS fecha, 0 AS publicaciones, " +
+                    "           CASE WHEN tipo_solicitud = 'INTERCAMBIO' THEN 1 ELSE 0 END AS intercambios, " +
+                    "           CASE WHEN tipo_solicitud = 'PRESTAMO' THEN 1 ELSE 0 END AS prestamos " +
+                    "    FROM solicitud " +
+                    ") actividad " +
+                    "GROUP BY TO_CHAR(actividad.fecha, 'YYYY-MM') " +
+                    "ORDER BY mes DESC"
+    )
+    List<InformePublicaciones> obtenerInformePublicaciones();
 }
