@@ -12,11 +12,12 @@ import java.util.Set;
 @Table(name = "mensaje")
 @Getter @Setter
 @NoArgsConstructor @AllArgsConstructor
-@EqualsAndHashCode
+@EqualsAndHashCode(onlyExplicitlyIncluded = true)
 public class Mensaje {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id")
+    @EqualsAndHashCode.Include
     private Integer idMensaje;
 
     @Enumerated(EnumType.STRING)

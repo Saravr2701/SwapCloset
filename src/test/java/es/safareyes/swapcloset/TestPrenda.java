@@ -1,6 +1,7 @@
 package es.safareyes.swapcloset;
 
 import es.safareyes.swapcloset.modelos.Prenda;
+import es.safareyes.swapcloset.repositorios.ConsultaPrendasCompletasProyeccion;
 import es.safareyes.swapcloset.repositorios.ConsultaPrendasPaginadasProyeccion;
 import es.safareyes.swapcloset.repositorios.IPrendaRepository;
 import org.junit.jupiter.api.Test;
@@ -24,5 +25,10 @@ public class TestPrenda {
     @Test
     void consultarPrendasPaginadas() {
         List<ConsultaPrendasPaginadasProyeccion> pagina = repository.obtenerPrendasPaginadas();
+    }
+
+    @Test
+    void consultarPrendasCompletas() {
+        List<ConsultaPrendasCompletasProyeccion> pagina = repository.obtenerPrendasCompletas();
     }
 }

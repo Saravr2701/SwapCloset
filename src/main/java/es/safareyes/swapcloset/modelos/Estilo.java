@@ -7,12 +7,13 @@ import lombok.*;
 @Table(name = "estilos")
 @Getter @Setter
 @NoArgsConstructor @AllArgsConstructor
-@EqualsAndHashCode
+@EqualsAndHashCode(onlyExplicitlyIncluded = true)
 public class Estilo {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id")
+    @EqualsAndHashCode.Include
     private Integer idEstilo;
 
     @Column(name = "nombre", nullable = false, length = 50)

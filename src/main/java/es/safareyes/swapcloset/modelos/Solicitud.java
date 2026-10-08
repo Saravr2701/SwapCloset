@@ -12,15 +12,15 @@ import java.util.Set;
 
 @Getter @Setter
 @NoArgsConstructor @AllArgsConstructor
-@EqualsAndHashCode
+@EqualsAndHashCode(onlyExplicitlyIncluded = true)
 public class Solicitud {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id")
+    @EqualsAndHashCode.Include
     private Integer idSolicitud;
 
-    @Enumerated(EnumType.STRING)
     @ManyToOne (fetch = FetchType.LAZY)
     @JoinColumn(name = "id_perfil", nullable = false)
     private Perfil perfil;

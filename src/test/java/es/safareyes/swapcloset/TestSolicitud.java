@@ -19,4 +19,9 @@ public class TestSolicitud {
     void consultarSolicitud() {
         List<Solicitud> todos = repository.findAll();
     }
+
+    @Test
+    void consultarPrendasQueHanSolicitado () {
+        List<Solicitud> todos = repository.findByPerfilIdPerfil(2);
+    }
 }

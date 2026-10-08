@@ -11,11 +11,13 @@ import java.util.Set;
 @Table(name = "prenda")
 @Getter @Setter
 @NoArgsConstructor @AllArgsConstructor
+@EqualsAndHashCode(onlyExplicitlyIncluded = true)
 public class Prenda {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id")
+    @EqualsAndHashCode.Include
     private Integer idPrenda;
 
     @Column(name = "titulo")

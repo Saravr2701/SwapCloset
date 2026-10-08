@@ -7,7 +7,7 @@ import lombok.*;
 @Table(name = "usuarios")
 
 @Getter @Setter
-@EqualsAndHashCode
+@EqualsAndHashCode (onlyExplicitlyIncluded = true)
 @NoArgsConstructor @AllArgsConstructor
 @ToString
 public class Usuario {
@@ -15,6 +15,7 @@ public class Usuario {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id")
+    @EqualsAndHashCode.Include
     private Integer idUsuario;
 
     @Column(name = "nombreusu", unique = true, nullable = false, length = 50)

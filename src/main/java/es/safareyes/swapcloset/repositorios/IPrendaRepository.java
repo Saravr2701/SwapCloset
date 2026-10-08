@@ -29,7 +29,7 @@ public interface IPrendaRepository extends JpaRepository<Prenda, Integer> {
 
     @Query(value =
             "SELECT " +
-                    "pr.id, " +
+                    "pr.id AS idPrenda, " +
                     "pr.titulo, " +
                     "pr.descripcion, " +
                     "pr.marca, " +
@@ -38,8 +38,18 @@ public interface IPrendaRepository extends JpaRepository<Prenda, Integer> {
                     "pr.estado, " +
                     "pr.permite_intercambio, " +
                     "pr.permite_prestamo, " +
-                    "pr.fecha_publicacion " +
+                    "pr.fecha_publicacion, " +
+                    "c.nombre, " +
+                    "p.id AS idPerfil, " +
+                    "CONCAT(p.nombre, ' ', p.ape1, ' ', p.ape2), " +
+                    "rep.reputacion, " +
+                    "STRING_AGG(f.url, ', ' ORDER BY f.orden) "+
                     "FROM prenda pr " +
+                    "JOIN categorias c ON pr.id_categorias = c.id " +
+                    "JOIN perfil p ON pr.id_perfil = p.id " +
+                    "JOIN reputacion_perfil rep ON p.id = rep.id_perfil " +
+                    "JOIN foto f ON pr.id = f.id_prenda " +
+                    "GROUP BY pr.id, p.id, c.nombre, rep.reputacion " +
                     "ORDER BY pr.fecha_publicacion DESC",
             nativeQuery = true)
     List<ConsultaPrendasCompletasProyeccion> obtenerPrendasCompletas();

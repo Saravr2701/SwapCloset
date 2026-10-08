@@ -16,7 +16,12 @@ public class TestSolicitudPrenda {
     private ISolicitudPrendaRepository repository;
 
     @Test
-    void consultarSolcitudPrenda() {
+    void consultarSolicitudPrenda() {
         List<SolicitudPrenda> todos = repository.findAll();
+    }
+
+    @Test
+    void consultarMisPrendasSolicitadas() {
+        List<SolicitudPrenda> todos = repository.prendasQueHanSolicitado(2);
     }
 }

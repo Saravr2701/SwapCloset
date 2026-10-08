@@ -7,12 +7,13 @@ import lombok.*;
 @Table(name = "solicitud_prenda")
 @Getter @Setter
 @NoArgsConstructor @AllArgsConstructor
-@EqualsAndHashCode
+@EqualsAndHashCode(onlyExplicitlyIncluded = true)
 public class SolicitudPrenda {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id")
+    @EqualsAndHashCode.Include
     private Integer id_SolicitudPrenda;
 
     @Enumerated(EnumType.STRING)
