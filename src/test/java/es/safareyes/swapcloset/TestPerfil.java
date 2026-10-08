@@ -29,6 +29,6 @@ public class TestPerfil {
 
     @Test
     void consultarPerfilCoincidentes() {
-        List<PerfilCoincidenteProyeccion> todos = repository.obtenerPerfilCoincidente(5);
+        List<PerfilCoincidenteProyeccion> todos = repository.obtenerPerfilCoincidente(2);
     }
 }
