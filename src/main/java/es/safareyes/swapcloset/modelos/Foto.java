@@ -23,7 +23,6 @@ public class Foto {
     @Column (name = "orden")
     private Integer orden;
 
-    @Enumerated(EnumType.STRING)
     @ManyToOne (fetch = FetchType.LAZY)
     @JoinColumn(name = "id_prenda")
     private Prenda prenda;

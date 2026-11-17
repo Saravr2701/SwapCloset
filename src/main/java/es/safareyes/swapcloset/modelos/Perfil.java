@@ -47,15 +47,15 @@ public class Perfil {
     @Column(name = "biografia")
     private String biografia;
 
-    @Enumerated(EnumType.STRING)
+    @Enumerated(EnumType.ORDINAL)
     @Column(name = "talla_pantalon", nullable = false)
     private TallaPantalon tallaPantalon;
 
-    @Enumerated(EnumType.STRING)
+    @Enumerated(EnumType.ORDINAL)
     @Column(name = "talla_zapatos", nullable = false)
     private TallaZapatos tallaZapatos;
 
-    @Enumerated(EnumType.STRING)
+    @Enumerated(EnumType.ORDINAL)
     @Column(name = "talla_camiseta", nullable = false)
     private TallaCamiseta tallaCamiseta;
 

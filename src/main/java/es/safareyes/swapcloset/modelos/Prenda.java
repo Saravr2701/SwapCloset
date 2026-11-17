@@ -41,20 +41,18 @@ public class Prenda {
     @Column(name = "permite_prestamo")
     private Boolean permitePrestamo;
 
-    @Enumerated(EnumType.STRING)
+    @Enumerated(EnumType.ORDINAL)
     @Column(name = "condicion")
     private CondicionPrenda condicion;
 
-    @Enumerated(EnumType.STRING)
+    @Enumerated(EnumType.ORDINAL)
     @Column(name = "estado")
     private EstadoPrenda estado;
 
-    @Enumerated(EnumType.STRING)
     @ManyToOne (fetch = FetchType.LAZY)
     @JoinColumn(name = "id_perfil", nullable = false)
     private Perfil perfil;
 
-    @Enumerated(EnumType.STRING)
     @ManyToOne (fetch = FetchType.LAZY)
     @JoinColumn(name = "id_categorias", nullable = false)
     private Categoria categoria;

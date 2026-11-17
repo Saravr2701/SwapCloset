@@ -21,7 +21,7 @@ public class Usuario {
     @Column(name = "nombreusu", unique = true, nullable = false, length = 50)
     private String nombreusu;
 
-    @Enumerated(EnumType.STRING)
+    @Enumerated(EnumType.ORDINAL)
     @Column(name = "rol",nullable = false)
     private RolUsuario rol;
 
