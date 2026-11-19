@@ -18,13 +18,11 @@ public class Valoracion {
     @EqualsAndHashCode.Include
     private Integer idValoracion;
 
-    @Enumerated(EnumType.STRING)
     @ManyToOne (fetch = FetchType.LAZY)
     @JoinColumn(name = "id_perfil", nullable = false)
     private Perfil perfil;
 
-    @Enumerated(EnumType.STRING)
-    @OneToOne (fetch = FetchType.LAZY)
+    @ManyToOne (fetch = FetchType.LAZY)
     @JoinColumn(name = "id_solicitud", nullable = false)
     private Solicitud solicitud;
 

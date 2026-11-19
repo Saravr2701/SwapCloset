@@ -20,7 +20,6 @@ public class Mensaje {
     @EqualsAndHashCode.Include
     private Integer idMensaje;
 
-    @Enumerated(EnumType.STRING)
     @ManyToOne (fetch = FetchType.LAZY)
     @JoinColumn(name = "id_solicitud",nullable = false)
     private Solicitud solicitud;

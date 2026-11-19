@@ -24,7 +24,7 @@ public class Notificacion {
     @JoinColumn(name = "id_perfil", nullable = false)
     private Perfil perfil;
 
-    @Enumerated(EnumType.STRING)
+    @Enumerated(EnumType.ORDINAL)
     @Column(name = "tipo", nullable = false)
     private TipoNotificacion tipoNotificacion;
 

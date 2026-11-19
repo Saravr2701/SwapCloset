@@ -22,6 +22,78 @@ public class ManejadorExcepciones {
                 e.getMessage());
     }
 
+    @ExceptionHandler(DatoNoEncontrado.class)
+    public ProblemDetail DatoNoEncontrado(DatoNoEncontrado e) {
+        return construir(HttpStatus.valueOf(404), "El campo introducido no se ha encontrado el los registros de la base de datos",
+                e.getMessage());
+    }
+
+    @ExceptionHandler(SolicitudPrendaPropia.class)
+    public ProblemDetail SolicitudPrendaPropia(SolicitudPrendaPropia e) {
+        return construir(HttpStatus.valueOf(422), "No puedes solicitar una prenda que te pertenece",
+                e.getMessage());
+    }
+
+    @ExceptionHandler(PrendaNoDisponible.class)
+    public ProblemDetail PrendaNoDisponible(PrendaNoDisponible e) {
+        return construir(HttpStatus.valueOf(409), "La prenda solicitada no está disponible",
+                e.getMessage());
+    }
+
+    @ExceptionHandler(TipoSolicitudNoPermitido.class)
+    public ProblemDetail TipoSolicitudNoPermitido(TipoSolicitudNoPermitido e) {
+        return construir(HttpStatus.valueOf(422), "Esta prenda no admite ese tipo de solicitud",
+                e.getMessage());
+    }
+
+    @ExceptionHandler(FechaNoValida.class)
+    public ProblemDetail FechaNoValida(FechaNoValida e) {
+        return construir(HttpStatus.valueOf(422), "La fecha de inicio no puede ser posterior a la de fin",
+                e.getMessage());
+    }
+
+    @ExceptionHandler(DuracionNoValida.class)
+    public ProblemDetail DuracionNoValida(DuracionNoValida e) {
+        return construir(HttpStatus.valueOf(422), "La duración de la solicitud excede del máximo establecido",
+                e.getMessage());
+    }
+
+    @ExceptionHandler(PrestamosActivosExcedidos.class)
+    public ProblemDetail PrestamosActivosExcedidos(PrestamosActivosExcedidos e) {
+        return construir(HttpStatus.valueOf(422), "No se pueden tener más de 3 préstamos de manera simultánea",
+                e.getMessage());
+    }
+
+    @ExceptionHandler(SolicitudDuplicada.class)
+    public ProblemDetail SolicitudDuplicada(SolicitudDuplicada e) {
+        return construir(HttpStatus.valueOf(409), "Ya has solicitado esta prenda anteriormente, está pendiente de aprobación",
+                e.getMessage());
+    }
+
+    @ExceptionHandler(Inexistente.class)
+    public ProblemDetail SolicitudInexistente(Inexistente e) {
+        return construir(HttpStatus.valueOf(404), "El mensaje no se puede mandar ya que no existe la solicitud de la prenda",
+                e.getMessage());
+    }
+
+    @ExceptionHandler(NoDisponible.class)
+    public ProblemDetail NoDisponible(NoDisponible e) {
+        return construir(HttpStatus.valueOf(409), "Esta conversación no está disponible",
+                e.getMessage());
+    }
+
+    @ExceptionHandler(PerfilNoEstaEnLaSolicitud.class)
+    public ProblemDetail PerfilNoEstaEnLaSolicitud(PerfilNoEstaEnLaSolicitud e) {
+        return construir(HttpStatus.valueOf(403), "El perfil indicado no pertenece a la solicitud",
+                e.getMessage());
+    }
+
+    @ExceptionHandler(SolicitudNoExiste.class)
+    public ProblemDetail SolicitudNoExiste(SolicitudNoExiste e) {
+        return construir(HttpStatus.valueOf(404), "La solicitud indicada no existe",
+                e.getMessage());
+    }
+
     //Para mostrar mensaje de error bonito cuando se realiza la validación en el DTO
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public ProblemDetail validarCampos(MethodArgumentNotValidException e) {

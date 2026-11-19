@@ -37,11 +37,11 @@ public class Solicitud {
     @Column(name = "fecha_fin")
     private LocalDate fechaFin;
 
-    @Enumerated(EnumType.STRING)
+    @Enumerated(EnumType.ORDINAL)
     @Column(name = "tipo_solicitud")
     private TipoSolicitud tipoSolicitud;
 
-    @Enumerated(EnumType.STRING)
+    @Enumerated(EnumType.ORDINAL)
     @Column(name = "estado")
     private EstadoSolicitud estadoSolicitud;
 

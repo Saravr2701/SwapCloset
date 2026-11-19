@@ -16,17 +16,15 @@ public class SolicitudPrenda {
     @EqualsAndHashCode.Include
     private Integer id_SolicitudPrenda;
 
-    @Enumerated(EnumType.STRING)
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "id_solicitud", nullable = false)
     private Solicitud solicitud;
 
-    @Enumerated(EnumType.STRING)
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "id_prenda", nullable = false)
     private Prenda prenda;
 
-    @Enumerated(EnumType.STRING)
+    @Enumerated(EnumType.ORDINAL)
     @Column(name = "rol_prenda")
     private RolPrenda rolPrenda;
 }
