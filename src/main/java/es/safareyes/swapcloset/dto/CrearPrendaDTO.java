@@ -28,8 +28,10 @@ public record CrearPrendaDTO(
         Boolean permitePrestamo,
 
         @NotNull(message = "La categoría es obligatoria")
+        @Positive(message = "El id de la categoría debe ser positivo")
         Integer idCategoria,
 
         @NotNull(message = "El perfil es obligatorio")
+        @Positive(message = "El id del perfil debe ser positivo")
         Integer idPerfil
 ) {}

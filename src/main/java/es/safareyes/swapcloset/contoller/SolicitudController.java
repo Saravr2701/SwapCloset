@@ -1,13 +1,11 @@
 package es.safareyes.swapcloset.contoller;
 
+import es.safareyes.swapcloset.dto.CambiarEstadoSolicitudDTO;
 import es.safareyes.swapcloset.dto.CrearPrendaDTO;
 import es.safareyes.swapcloset.dto.CrearSolicitudDTO;
 import es.safareyes.swapcloset.service.ISolicitudService;
 import jakarta.validation.Valid;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/api/v1/solicitudes")
@@ -22,5 +20,10 @@ public class SolicitudController {
     @PostMapping("/crearSolicitud")
     public void crearSolicitud (@Valid @RequestBody CrearSolicitudDTO dto){
         solicitudService.crearSolicitud(dto);
+    }
+
+    @PatchMapping("/{id}/estado/cambiarEstadoSolicitud")
+    public void cambiarEstadoSolicitud (@PathVariable Integer id, @Valid @RequestBody CambiarEstadoSolicitudDTO dto){
+        solicitudService.cambiarEstadoSolicitud(id, dto);
     }
 }

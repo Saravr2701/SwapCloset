@@ -1,10 +1,7 @@
 package es.safareyes.swapcloset.service;
 
 import es.safareyes.swapcloset.dto.EnviarMensajeDTO;
-import es.safareyes.swapcloset.exception.Inexistente;
-import es.safareyes.swapcloset.exception.NoDisponible;
-import es.safareyes.swapcloset.exception.PerfilNoEstaEnLaSolicitud;
-import es.safareyes.swapcloset.exception.SolicitudNoExiste;
+import es.safareyes.swapcloset.exception.*;
 import es.safareyes.swapcloset.mapper.MensajeMapper;
 import es.safareyes.swapcloset.modelos.*;
 import es.safareyes.swapcloset.repositorios.IMensajeRepository;
@@ -32,7 +29,7 @@ public class MensajeService implements IMensajeService{
         Solicitud solicitud = solicitudRepository.findById(idSolicitud).orElse(null);
 
         if (solicitud == null){
-            throw new Inexistente("La solicitud de la prenda no existe");
+            throw new RelacionNoEncontrada("La solicitud de la prenda no existe");
         }
 
         if (solicitud.getEstadoSolicitud().equals(EstadoSolicitud.RECHAZADA) ||

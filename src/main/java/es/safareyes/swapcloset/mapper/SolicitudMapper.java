@@ -11,7 +11,5 @@ public interface SolicitudMapper {
     @Mapping(target = "fechaCreacion", ignore = true)
     @Mapping(target = "fechaRespuesta", ignore = true)
 
-
-
     Solicitud crearSolicitud(CrearSolicitudDTO crearSolicitudDTO);
 }

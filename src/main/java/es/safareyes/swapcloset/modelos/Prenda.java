@@ -41,6 +41,9 @@ public class Prenda {
     @Column(name = "permite_prestamo")
     private Boolean permitePrestamo;
 
+    @Column(name = "activo")
+    private Boolean activo;
+
     @Enumerated(EnumType.ORDINAL)
     @Column(name = "condicion")
     private CondicionPrenda condicion;

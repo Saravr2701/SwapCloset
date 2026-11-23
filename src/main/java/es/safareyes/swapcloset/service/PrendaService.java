@@ -60,7 +60,24 @@ public class PrendaService implements IPrendaService{
 
         nuevaPrenda.setEstado(EstadoPrenda.BORRADOR);
 
-
+        nuevaPrenda.setActivo(true);
+        
         prendaRepository.save(nuevaPrenda);
+    }
+
+    public void eliminarPrendaLogico(Integer id){
+        Prenda nuevaPrenda = prendaRepository.findById(id).orElse(null);
+        if(nuevaPrenda == null){
+            throw new RelacionNoEncontrada("La prenda indicada no existe");
+        }
+
+        if(nuevaPrenda.getEstado().equals(EstadoPrenda.RESERVADA)){
+            throw new RelacionNoEncontrada("La prenda indicada no se puede eliminar porque está reservada");
+        }
+
+        if(nuevaPrenda.getEstado().equals(EstadoPrenda.PRESTADA)){
+            throw new RelacionNoEncontrada("La prenda indicada no se puede eliminar porque está prestada");
+        }
+        prendaRepository.deleteById(id);
     }
 }

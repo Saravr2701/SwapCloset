@@ -24,6 +24,7 @@ public interface IPrendaRepository extends JpaRepository<Prenda, Integer> {
                 "pr.permite_prestamo, " +
                 "pr.fecha_publicacion " +
             "FROM prenda pr " +
+            "WHERE pr.estado = 1 " +
             "ORDER BY pr.fecha_publicacion DESC",
              nativeQuery = true)
     List<ConsultaPrendasPaginadasProyeccion> obtenerPrendasPaginadas();
@@ -50,6 +51,7 @@ public interface IPrendaRepository extends JpaRepository<Prenda, Integer> {
                     "JOIN perfil p ON pr.id_perfil = p.id " +
                     "JOIN reputacion_perfil rep ON p.id = rep.id_perfil " +
                     "JOIN foto f ON pr.id = f.id_prenda " +
+                    "WHERE pr.estado = 1 " +
                     "GROUP BY pr.id, p.id, c.nombre, rep.reputacion " +
                     "ORDER BY pr.fecha_publicacion DESC",
             nativeQuery = true)

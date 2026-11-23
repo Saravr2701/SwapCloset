@@ -14,7 +14,7 @@ public class SolicitudPrenda {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id")
     @EqualsAndHashCode.Include
-    private Integer id_SolicitudPrenda;
+    private Integer idSolicitudPrenda;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "id_solicitud", nullable = false)

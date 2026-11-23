@@ -5,5 +5,5 @@ import es.safareyes.swapcloset.dto.CrearPrendaDTO;
 public interface IPrendaService {
 
     void crearPrenda(CrearPrendaDTO dto);
-
+    void eliminarPrendaLogico(Integer id);
 }

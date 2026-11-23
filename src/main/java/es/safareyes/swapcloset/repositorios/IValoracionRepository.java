@@ -7,5 +7,8 @@ import org.springframework.stereotype.Repository;
 @Repository
 
 public interface IValoracionRepository extends JpaRepository<Valoracion, Integer> {
-
+    boolean existsBySolicitud_IdSolicitudAndPerfil_IdPerfil(
+            Integer idSolicitud,
+            Integer idPerfil
+    );
 }

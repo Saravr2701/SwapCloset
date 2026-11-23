@@ -94,6 +94,31 @@ public class ManejadorExcepciones {
                 e.getMessage());
     }
 
+    @ExceptionHandler(SolicitudRechazada.class)
+    public ProblemDetail SolicitudRechazada(SolicitudRechazada e) {
+        return construir(HttpStatus.valueOf(409), "El estado de la solicitud no acepta valoraciones",
+                e.getMessage());
+    }
+
+    @ExceptionHandler(SolicitudEnCurso.class)
+    public ProblemDetail SolicitudEnCurso(SolicitudEnCurso e) {
+        return construir(HttpStatus.valueOf(409), "El estado de la solicitud no acepta valoraciones",
+                e.getMessage());
+    }
+
+    @ExceptionHandler(ValoracionNoValida.class)
+    public ProblemDetail ValoracionNoValida(ValoracionNoValida e) {
+        return construir(HttpStatus.valueOf(409), "Valoración no válida",
+                e.getMessage());
+    }
+
+    @ExceptionHandler(EstadoNoValido.class)
+    public ProblemDetail EstadoNoValido(EstadoNoValido e) {
+        return construir(HttpStatus.valueOf(422), "El estado de la solicitud no permite este cambio",
+                e.getMessage());
+    }
+
+
     //Para mostrar mensaje de error bonito cuando se realiza la validación en el DTO
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public ProblemDetail validarCampos(MethodArgumentNotValidException e) {
