@@ -1,6 +1,7 @@
 package es.safareyes.swapcloset.contoller;
 
 import es.safareyes.swapcloset.dto.ModificarPerfilDTO;
+import es.safareyes.swapcloset.dto.VisualizarPerfilDTO;
 import es.safareyes.swapcloset.service.IPerfilService;
 import jakarta.validation.Valid;
 import org.springframework.web.bind.annotation.*;
@@ -20,7 +21,7 @@ public class PerfilController {
     }
 
     @GetMapping("/{id}")
-    public void visualizarPerfil(@PathVariable Integer id){
-        perfilService.visualizarPerfil();
+    public VisualizarPerfilDTO visualizarPerfil(@PathVariable Integer id){
+        return perfilService.visualizarPerfil(id);
     }
 }

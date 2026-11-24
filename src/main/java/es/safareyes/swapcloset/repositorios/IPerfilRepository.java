@@ -53,4 +53,9 @@ public interface IPerfilRepository extends JpaRepository<Perfil, Integer> {
     List<PerfilCoincidenteProyeccion> obtenerPerfilCoincidente(@Param("id_perfil") Integer idPerfil);
 
     Optional<Perfil> findByUsuario_IdUsuario(Integer idUsuario);
+
+    @Query("SELECT CONCAT(p.nombre, ' ', UPPER(SUBSTRING(p.ape1, 1, 1)), '.')" +
+            " FROM Perfil p " +
+            "WHERE p.usuario.idUsuario = :idUsuario")
+    String obtenerNombreCorto(@Param("idUsuario") Integer idUsuario);
 }

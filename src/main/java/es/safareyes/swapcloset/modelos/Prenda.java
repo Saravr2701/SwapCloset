@@ -32,6 +32,9 @@ public class Prenda {
     @Column(name = "talla")
     private String talla;
 
+    @Column(name = "color")
+    private Color color;
+
     @Column(name = "fecha_publicacion")
     private LocalDate fechaPublicacion;
 

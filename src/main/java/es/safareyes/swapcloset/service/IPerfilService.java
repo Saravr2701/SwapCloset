@@ -1,8 +1,9 @@
 package es.safareyes.swapcloset.service;
 
 import es.safareyes.swapcloset.dto.ModificarPerfilDTO;
+import es.safareyes.swapcloset.dto.VisualizarPerfilDTO;
 
 public interface IPerfilService {
     void modificarPerfil(Integer idUsuario, ModificarPerfilDTO modificarPerfilDTO);
-    void visualizarPerfil();
+    VisualizarPerfilDTO visualizarPerfil(Integer id);
 }

@@ -1,16 +1,18 @@
 package es.safareyes.swapcloset.service;
 
 import es.safareyes.swapcloset.dto.ModificarPerfilDTO;
+import es.safareyes.swapcloset.dto.PrendasPerfilDTO;
+import es.safareyes.swapcloset.dto.VisualizarPerfilDTO;
 import es.safareyes.swapcloset.exception.RelacionNoEncontrada;
-import es.safareyes.swapcloset.modelos.Estilo;
-import es.safareyes.swapcloset.modelos.Perfil;
+import es.safareyes.swapcloset.modelos.*;
 import es.safareyes.swapcloset.repositorios.IEstilosRepository;
 import es.safareyes.swapcloset.repositorios.IPerfilRepository;
+import es.safareyes.swapcloset.repositorios.IPrendaRepository;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 
@@ -21,6 +23,7 @@ public class PerfilService implements IPerfilService {
 
     IPerfilRepository perfilRepository;
     IEstilosRepository estilosRepository;
+    IPrendaRepository prendaRepository;
 
     @Transactional
     public void modificarPerfil(Integer idUsuario, ModificarPerfilDTO dto) {
@@ -78,5 +81,76 @@ public class PerfilService implements IPerfilService {
     }
 
     @Transactional(readOnly = true)
-    public void visualizarPerfil(){}
+    public VisualizarPerfilDTO visualizarPerfil(Integer id){
+
+        Perfil perfil = perfilRepository.findByUsuario_IdUsuario(id).orElse(null);
+
+        if (perfil == null) {
+            throw new RelacionNoEncontrada("El perfil indicado no existe");
+        }
+
+        List<String> estilos = new ArrayList<>();
+
+        for (Estilo estilo : perfil.getEstilos()) {
+            estilos.add(estilo.getNombre());
+        }
+
+        int numeroResenas = perfil.getValoraciones().size();
+        double suma = 0.0;
+
+        for (Valoracion valoracion : perfil.getValoraciones()) {
+            suma += valoracion.getPuntuacion();
+        }
+
+        Double reputacion = null;
+        if (numeroResenas > 0) {
+            reputacion = Math.round((suma / numeroResenas) * 10.0) / 10.0;
+        }
+
+        Integer tallaZapatos = Integer.parseInt(
+                perfil.getTallaZapatos().name().substring(1)
+        );
+
+        Integer tallaPantalon = Integer.parseInt(
+                perfil.getTallaPantalon().name().substring(1)
+        );
+
+        String tallaCamiseta = perfil.getTallaCamiseta().name();
+
+        String nombreCompleto = perfilRepository.obtenerNombreCorto(id);
+
+        List<PrendasPerfilDTO> prendas = new ArrayList<>();
+
+        for (Prenda prenda : perfil.getPrendas()) {
+            if (Boolean.TRUE.equals(prenda.getActivo()) && prenda.getEstado() != EstadoPrenda.BORRADOR) {
+                List<String> fotos = prendaRepository.fotos(prenda.getIdPrenda());
+                String fotoPrincipal = null;
+
+                if (!fotos.isEmpty()) {
+                    fotoPrincipal = fotos.get(0);
+                }
+
+                PrendasPerfilDTO dto = new PrendasPerfilDTO(
+                        prenda.getIdPrenda(),
+                        prenda.getTitulo(),
+                        prenda.getMarca(),
+                        prenda.getTalla(),
+                        fotoPrincipal
+                );
+                prendas.add(dto);
+            }
+        }
+        return new VisualizarPerfilDTO(
+                nombreCompleto,
+                perfil.getCiudad(),
+                perfil.getBiografia(),
+                tallaZapatos,
+                tallaPantalon,
+                tallaCamiseta,
+                estilos,
+                reputacion,
+                numeroResenas,
+                prendas
+        );
+    }
 }

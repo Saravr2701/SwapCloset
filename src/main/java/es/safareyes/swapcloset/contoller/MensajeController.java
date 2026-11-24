@@ -9,7 +9,6 @@ import es.safareyes.swapcloset.service.IMensajeService;
 @RestController
 @RequestMapping("/api/v1/solicitudes/{id}/mensajes")
 public class MensajeController {
-
     private IMensajeService mensajeService;
 
     public MensajeController(IMensajeService mensajeService){
