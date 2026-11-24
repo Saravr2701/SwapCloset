@@ -3,7 +3,9 @@ package es.safareyes.swapcloset.repositorios;
 import es.safareyes.swapcloset.dto.InformePublicaciones;
 import es.safareyes.swapcloset.modelos.Prenda;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
@@ -76,4 +78,20 @@ public interface IPrendaRepository extends JpaRepository<Prenda, Integer> {
                     "ORDER BY mes DESC"
     )
     List<InformePublicaciones> obtenerInformePublicaciones();
+
+    @Modifying
+    @Query("UPDATE Solicitud s " +
+            "SET s.estadoSolicitud = es.safareyes.swapcloset.modelos.EstadoSolicitud.CANCELADA " +
+            "WHERE s.estadoSolicitud = es.safareyes.swapcloset.modelos.EstadoSolicitud.PENDIENTE " +
+                "AND s.idSolicitud IN (SELECT sp.solicitud.idSolicitud " +
+                                        "FROM SolicitudPrenda sp " +
+                                        "WHERE sp.prenda.idPrenda = :idPrenda)")
+    Integer cancelarSolicitudesPendientes(@Param("idPrenda") Integer idPrenda);
+
+    @Query("SELECT f.urlFoto " +
+            "FROM Foto f " +
+            "WHERE f.prenda.idPrenda = :idPrenda " +
+            "ORDER BY f.orden")
+    List<String> fotos(@Param ("idPrenda") Integer idPrenda);
+
 }

@@ -118,6 +118,12 @@ public class ManejadorExcepciones {
                 e.getMessage());
     }
 
+    @ExceptionHandler(BajaNoPermitida.class)
+    public ProblemDetail BajaNoPermitida(BajaNoPermitida e) {
+        return construir(HttpStatus.valueOf(409), "Baja de la prenda no permitida",
+                e.getMessage());
+    }
+
 
     //Para mostrar mensaje de error bonito cuando se realiza la validación en el DTO
     @ExceptionHandler(MethodArgumentNotValidException.class)

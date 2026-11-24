@@ -7,6 +7,7 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
+import java.util.Optional;
 
 @Repository
 
@@ -50,4 +51,6 @@ public interface IPerfilRepository extends JpaRepository<Perfil, Integer> {
                     "ORDER BY rep.media_puntuacion DESC;",
             nativeQuery = true)
     List<PerfilCoincidenteProyeccion> obtenerPerfilCoincidente(@Param("id_perfil") Integer idPerfil);
+
+    Optional<Perfil> findByUsuario_IdUsuario(Integer idUsuario);
 }

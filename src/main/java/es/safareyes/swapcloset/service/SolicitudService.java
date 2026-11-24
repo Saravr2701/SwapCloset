@@ -61,6 +61,10 @@ public class SolicitudService implements ISolicitudService{
             throw new PrendaNoDisponible("La prenda solicitada no está disponible");
         }
 
+        if (Boolean.FALSE.equals(prendaSolicitada.getActivo())) {
+            throw new PrendaNoDisponible("La prenda solicitada está desactivada");
+        }
+
         long solicitudPendiente = solicitudRepository.contarSolicitudesPendientes(dto.idPerfil(), prendaSolicitada.getIdPrenda(), RolPrenda.SOLICITADA, EstadoSolicitud.PENDIENTE);
 
         if(solicitudPendiente > 0){
@@ -89,6 +93,10 @@ public class SolicitudService implements ISolicitudService{
 
             if (!prendaOfrecida.getPerfil().getIdPerfil().equals(dto.idPerfil())) {
                 throw new SolicitudPrendaPropia("Debes ofrecer una prenda que te pertenezca");
+            }
+
+            if (Boolean.FALSE.equals(prendaOfrecida.getActivo())) {
+                throw new PrendaNoDisponible("La prenda ofrecida está desactivada");
             }
         }
 
