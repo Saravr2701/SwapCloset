@@ -2,6 +2,7 @@ package es.safareyes.swapcloset.service;
 
 import es.safareyes.swapcloset.dto.CambiarEstadoSolicitudDTO;
 import es.safareyes.swapcloset.dto.CrearSolicitudDTO;
+import es.safareyes.swapcloset.dto.MisSolicitudesDTO;
 import es.safareyes.swapcloset.exception.*;
 import es.safareyes.swapcloset.mapper.SolicitudMapper;
 import es.safareyes.swapcloset.modelos.*;
@@ -14,6 +15,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -246,5 +248,81 @@ public class SolicitudService implements ISolicitudService{
 
         nuevaSolicitud.setEstadoSolicitud(dto.estado());
         solicitudRepository.save(nuevaSolicitud);
+    }
+
+    @Transactional(readOnly = true)
+    public List<MisSolicitudesDTO> misSolicitudesDTO(Integer idUsuario, String bandeja, EstadoSolicitud estado){
+        Perfil perfil = perfilRepository.findByUsuario_IdUsuario(idUsuario).orElse(null);
+
+        if (perfil == null) {
+            throw new RelacionNoEncontrada("El perfil indicado no existe");
+        }
+
+        List<Solicitud> solicitudes;
+
+
+        if (bandeja.equalsIgnoreCase("enviadas")){
+            solicitudes = solicitudRepository.findByPerfilIdPerfil(perfil.getIdPerfil());
+        }else if (bandeja.equalsIgnoreCase("recibidas")){
+            solicitudes = solicitudRepository.obtenerSolicitudesRecibidas(perfil.getIdPerfil(), RolPrenda.SOLICITADA);
+        }else {
+            throw new BandejaNoValida("La bandeja indicada no es válida, introduce enviadas o recibidas");
+        }
+
+        List<MisSolicitudesDTO> resultado = new ArrayList<>();
+
+        for (Solicitud solicitud : solicitudes) {
+            if (estado != null && solicitud.getEstadoSolicitud() != estado) {
+                continue;
+            }
+
+            SolicitudPrenda solicitada = solicitudPrendaRepository.findBySolicitud_IdSolicitudAndRolPrenda(solicitud.getIdSolicitud(), RolPrenda.SOLICITADA);
+
+            if (solicitada == null) {
+                throw new RelacionNoEncontrada("No se ha encontrado la prenda solicitada");
+            }
+
+            SolicitudPrenda ofrecida = solicitudPrendaRepository.findBySolicitud_IdSolicitudAndRolPrenda(solicitud.getIdSolicitud(), RolPrenda.OFRECIDA);
+
+            Prenda prendaSolicitada = solicitada.getPrenda();
+
+            List<String> fotosSolicitada =
+                    prendaRepository.fotos(prendaSolicitada.getIdPrenda());
+
+            String fotoSolicitada = null;
+
+            if (!fotosSolicitada.isEmpty()) {
+                fotoSolicitada = fotosSolicitada.get(0);
+            }
+
+            String nombreOfrecida = null;
+            String fotoOfrecida = null;
+
+            if (ofrecida != null) {
+                Prenda prendaOfrecida = ofrecida.getPrenda();
+
+                nombreOfrecida = prendaOfrecida.getTitulo();
+
+                List<String> fotosOfrecida =
+                        prendaRepository.fotos(prendaOfrecida.getIdPrenda());
+
+                if (!fotosOfrecida.isEmpty()) {
+                    fotoOfrecida = fotosOfrecida.get(0);
+                }
+            }
+
+            MisSolicitudesDTO dto = new MisSolicitudesDTO(
+                    solicitud.getIdSolicitud(),
+                    nombreOfrecida,
+                    fotoOfrecida,
+                    prendaSolicitada.getTitulo(),
+                    fotoSolicitada,
+                    solicitud.getEstadoSolicitud().name()
+            );
+
+            resultado.add(dto);
+        }
+
+        return resultado;
     }
 }

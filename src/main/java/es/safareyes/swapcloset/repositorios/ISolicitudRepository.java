@@ -14,11 +14,7 @@ public interface ISolicitudRepository extends JpaRepository<Solicitud, Integer> 
     //Consulta de las prendas que ha solicitado
     List<Solicitud> findByPerfilIdPerfil(Integer idPerfil);
 
-    long countByPerfil_IdPerfilAndTipoSolicitudAndEstadoSolicitudIn(
-            Integer idPerfil,
-            TipoSolicitud tipoSolicitud,
-            List<EstadoSolicitud> estadoSolicitud
-    );
+    long countByPerfil_IdPerfilAndTipoSolicitudAndEstadoSolicitudIn(Integer idPerfil, TipoSolicitud tipoSolicitud, List<EstadoSolicitud> estadoSolicitud);
 
     @Query("""
     SELECT CASE WHEN COUNT(s) > 0 THEN true ELSE false END
@@ -28,10 +24,7 @@ public interface ISolicitudRepository extends JpaRepository<Solicitud, Integer> 
     AND (s.perfil.idPerfil = :idPerfil
     OR sp.prenda.perfil.idPerfil = :idPerfil)
     """)
-    boolean perfilEnSolicitud(
-            @Param("idSolicitud") Integer idSolicitud,
-            @Param("idPerfil") Integer idPerfil
-    );
+    boolean perfilEnSolicitud(@Param("idSolicitud") Integer idSolicitud, @Param("idPerfil") Integer idPerfil);
 
     @Query("""
     SELECT COUNT(sp)
@@ -42,4 +35,10 @@ public interface ISolicitudRepository extends JpaRepository<Solicitud, Integer> 
     AND sp.solicitud.estadoSolicitud = :estado
     """)
     long contarSolicitudesPendientes(@Param("idPerfil") Integer idPerfil, @Param("idPrenda") Integer idPrenda, @Param("rol") RolPrenda rol, @Param("estado") EstadoSolicitud estado);
+
+    @Query("SELECT DISTINCT sp.solicitud " +
+            "FROM SolicitudPrenda sp " +
+            "WHERE sp.prenda.perfil.idPerfil = :idPerfil " +
+            "AND sp.rolPrenda = :rol")
+    List<Solicitud> obtenerSolicitudesRecibidas(@Param("idPerfil") Integer idPerfil, @Param("rol") RolPrenda rol);
 }

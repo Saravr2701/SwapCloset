@@ -124,6 +124,12 @@ public class ManejadorExcepciones {
                 e.getMessage());
     }
 
+    @ExceptionHandler(BandejaNoValida.class)
+    public ProblemDetail BandejaNoValida(BandejaNoValida e) {
+        return construir(HttpStatus.valueOf(409), "La bandeja introducida no es válida",
+                e.getMessage());
+    }
+
 
     //Para mostrar mensaje de error bonito cuando se realiza la validación en el DTO
     @ExceptionHandler(MethodArgumentNotValidException.class)
