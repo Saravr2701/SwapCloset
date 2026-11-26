@@ -23,8 +23,7 @@ public class PrendaSpecifications {
 
             List<Predicate> condiciones = new ArrayList<>();
 
-            condiciones.add(cb.equal(
-                    root.get("estado"), EstadoPrenda.DISPONIBLE));
+            condiciones.add(cb.equal(root.get("estado"), EstadoPrenda.DISPONIBLE));
 
             condiciones.add(cb.isTrue(root.get("activo")));
 

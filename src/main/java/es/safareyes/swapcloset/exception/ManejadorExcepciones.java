@@ -166,8 +166,7 @@ public class ManejadorExcepciones {
     }
 
     @ExceptionHandler(HttpMessageNotReadableException.class)
-    public ProblemDetail manejarJsonIncorrecto(
-            HttpMessageNotReadableException e) {
+    public ProblemDetail manejarJsonIncorrecto(HttpMessageNotReadableException e) {
 
         ProblemDetail problema = ProblemDetail.forStatus(
                 HttpStatus.BAD_REQUEST);
@@ -189,9 +188,7 @@ public class ManejadorExcepciones {
     }
 
     @ExceptionHandler(MissingServletRequestParameterException.class)
-    public ProblemDetail parametroObligatorio(
-            MissingServletRequestParameterException e) {
-
+    public ProblemDetail parametroObligatorio(MissingServletRequestParameterException e) {
         return construir(
                 HttpStatus.BAD_REQUEST,
                 "Parámetro obligatorio",
