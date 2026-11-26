@@ -214,15 +214,23 @@ public class SolicitudService implements ISolicitudService{
 
                 }
 
-                if (dto.estado().equals(EstadoSolicitud.ACEPTADA)
-                    && nuevaSolicitud.getTipoSolicitud().equals(TipoSolicitud.PRESTAMO)) {
-                    if (nuevaSolicitudPrenda.getPrenda().getEstado() != (EstadoPrenda.DISPONIBLE )){
+                if (dto.estado().equals(EstadoSolicitud.ACEPTADA) && nuevaSolicitud.getTipoSolicitud().equals(TipoSolicitud.PRESTAMO)) {
+                    if (nuevaSolicitudPrenda.getPrenda().getEstado() != EstadoPrenda.DISPONIBLE) {
                         throw new PrendaNoDisponible("La prenda no está disponible");
                     }
 
+                    long prestamosActivos = solicitudRepository
+                            .countByPerfil_IdPerfilAndTipoSolicitudAndEstadoSolicitudIn(
+                                    nuevaSolicitud.getPerfil().getIdPerfil(),
+                                    TipoSolicitud.PRESTAMO,
+                                    List.of(EstadoSolicitud.ACEPTADA, EstadoSolicitud.RETRASADA)
+                            );
+
+                    if (prestamosActivos >= 3) {
+                        throw new PrestamosActivosExcedidos("El solicitante ya tiene 3 préstamos activos");
+                    }
                     nuevaSolicitudPrenda.getPrenda().setEstado(EstadoPrenda.PRESTADA);
                 }
-
                 nuevaSolicitud.setFechaRespuesta(LocalDate.now());
 
             }else if (nuevaSolicitud.getEstadoSolicitud().equals(EstadoSolicitud.ACEPTADA) ||

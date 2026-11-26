@@ -179,6 +179,10 @@ public class PrendaService implements IPrendaService{
             throw new PrendaNoDisponible("La prenda está en borrador asi que sus datos no son visibles");
         }
 
+        if (prenda.getEstado() == EstadoPrenda.RETIRADA) {
+            throw new PrendaNoDisponible("La prenda está retirada y sus datos no son visibles");
+        }
+
         List<Foto> fotosOrdenadas = new ArrayList<>(prenda.getFotos());
 
         fotosOrdenadas.sort(
