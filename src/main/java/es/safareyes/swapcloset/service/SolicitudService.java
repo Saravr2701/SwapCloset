@@ -183,7 +183,11 @@ public class SolicitudService implements ISolicitudService{
             propietario = nuevaSolicitudPrenda.getPrenda().getPerfil();
 
             if (nuevaSolicitud.getEstadoSolicitud().equals(EstadoSolicitud.PENDIENTE)){
-                if (dto.estado() != EstadoSolicitud.ACEPTADA && dto.estado() != EstadoSolicitud.RECHAZADA){
+                if (dto.estado() == EstadoSolicitud.CANCELADA) {
+                    throw new EstadoNoValido("Solo el solicitante puede cancelar la solicitud");
+                }
+
+                if (dto.estado() != EstadoSolicitud.ACEPTADA && dto.estado() != EstadoSolicitud.RECHAZADA) {
                     throw new EstadoNoValido("El nuevo estado no es válido");
                 }
 

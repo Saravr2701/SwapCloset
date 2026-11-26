@@ -1,6 +1,7 @@
 package es.safareyes.swapcloset.mapper;
 
 import es.safareyes.swapcloset.dto.CrearPrendaDTO;
+import es.safareyes.swapcloset.dto.PrendaTarjetaDTO;
 import es.safareyes.swapcloset.modelos.Prenda;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
@@ -18,4 +19,9 @@ public interface PrendaMapper {
 
 
     Prenda toEntity(CrearPrendaDTO dto);
+
+
+
+    @Mapping(target = "fotoPrincipal", source = "fotoPrincipal")
+    PrendaTarjetaDTO aTarjeta(Prenda prenda, String fotoPrincipal);
 }

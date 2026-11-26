@@ -2,9 +2,12 @@ package es.safareyes.swapcloset.exception;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ProblemDetail;
+import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
+import org.springframework.web.bind.MissingServletRequestParameterException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
+import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
 
 import java.time.LocalDateTime;
 
@@ -36,7 +39,7 @@ public class ManejadorExcepciones {
 
     @ExceptionHandler(PrendaNoDisponible.class)
     public ProblemDetail PrendaNoDisponible(PrendaNoDisponible e) {
-        return construir(HttpStatus.valueOf(409), "La prenda solicitada no está disponible",
+        return construir(HttpStatus.valueOf(409), "La prenda no está disponible",
                 e.getMessage());
     }
 
@@ -48,7 +51,7 @@ public class ManejadorExcepciones {
 
     @ExceptionHandler(FechaNoValida.class)
     public ProblemDetail FechaNoValida(FechaNoValida e) {
-        return construir(HttpStatus.valueOf(422), "La fecha de inicio no puede ser posterior a la de fin",
+        return construir(HttpStatus.valueOf(422), "Las fechas introducidas no son válidas",
                 e.getMessage());
     }
 
@@ -130,6 +133,24 @@ public class ManejadorExcepciones {
                 e.getMessage());
     }
 
+    @ExceptionHandler(SinColor.class)
+    public ProblemDetail SinColor(SinColor e) {
+        return construir(HttpStatus.valueOf(409), "El color de la prenda no puede estar vacio",
+                e.getMessage());
+    }
+
+    @ExceptionHandler(AccesoInformeNoPermitido.class)
+    public ProblemDetail AccesoInformeNoPermitido(AccesoInformeNoPermitido e) {
+        return construir(HttpStatus.valueOf(403), "No tienes permitido el acceso al informe mensual",
+                e.getMessage());
+    }
+
+    @ExceptionHandler(PaginacionNoValida.class)
+    public ProblemDetail PaginacionNoValida(PaginacionNoValida e) {
+        return construir(HttpStatus.valueOf(400), "Los parámetros de paginación son incorrectos",
+                e.getMessage());
+    }
+
 
     //Para mostrar mensaje de error bonito cuando se realiza la validación en el DTO
     @ExceptionHandler(MethodArgumentNotValidException.class)
@@ -142,6 +163,40 @@ public class ManejadorExcepciones {
         return construir(HttpStatus.valueOf(400),
                 "Campo obligatorio o incorrecto",
                 mensaje);
+    }
+
+    @ExceptionHandler(HttpMessageNotReadableException.class)
+    public ProblemDetail manejarJsonIncorrecto(
+            HttpMessageNotReadableException e) {
+
+        ProblemDetail problema = ProblemDetail.forStatus(
+                HttpStatus.BAD_REQUEST);
+
+        problema.setTitle("Datos incorrectos");
+        problema.setDetail("El JSON contiene algún valor o formato no válido");
+
+        return problema;
+    }
+
+    @ExceptionHandler(MethodArgumentTypeMismatchException.class)
+    public ProblemDetail argumentoIncorrecto(MethodArgumentTypeMismatchException e) {
+        return construir(
+                HttpStatus.BAD_REQUEST,
+                "Parámetro incorrecto",
+                "El valor introducido en el parámetro "
+                        + e.getName() + " no es válido"
+        );
+    }
+
+    @ExceptionHandler(MissingServletRequestParameterException.class)
+    public ProblemDetail parametroObligatorio(
+            MissingServletRequestParameterException e) {
+
+        return construir(
+                HttpStatus.BAD_REQUEST,
+                "Parámetro obligatorio",
+                "Debes introducir el parámetro " + e.getParameterName()
+        );
     }
 
     private ProblemDetail construir(HttpStatus estado, String titulo, String detalle) {

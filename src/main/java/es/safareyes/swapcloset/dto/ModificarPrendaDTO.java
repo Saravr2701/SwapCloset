@@ -1,5 +1,6 @@
 package es.safareyes.swapcloset.dto;
 
+import es.safareyes.swapcloset.modelos.Color;
 import es.safareyes.swapcloset.modelos.CondicionPrenda;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Positive;
@@ -18,6 +19,8 @@ public record ModificarPrendaDTO (
         String talla,
 
         CondicionPrenda condicion,
+
+        Color color,
 
         Boolean permiteIntercambio,
 

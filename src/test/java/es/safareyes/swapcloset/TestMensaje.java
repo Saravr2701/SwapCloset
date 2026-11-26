@@ -7,6 +7,9 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.data.jpa.test.autoconfigure.DataJpaTest;
 import org.springframework.boot.jdbc.test.autoconfigure.AutoConfigureTestDatabase;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 
 import java.util.List;
 
@@ -23,6 +26,7 @@ public class TestMensaje {
 
     @Test
     void consultarChat() {
-        List<ConversacionProyeccion> todos = repository.obtenerConversaciones(1);
+        Pageable pageable = PageRequest.of(0, 10);
+        Page<ConversacionProyeccion> todos = repository.obtenerConversaciones(3, pageable);
     }
 }

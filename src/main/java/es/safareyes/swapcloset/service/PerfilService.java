@@ -1,13 +1,16 @@
 package es.safareyes.swapcloset.service;
 
 import es.safareyes.swapcloset.dto.ModificarPerfilDTO;
+import es.safareyes.swapcloset.dto.PerfilesAfinesDTO;
 import es.safareyes.swapcloset.dto.PrendasPerfilDTO;
 import es.safareyes.swapcloset.dto.VisualizarPerfilDTO;
 import es.safareyes.swapcloset.exception.RelacionNoEncontrada;
+import es.safareyes.swapcloset.mapper.PerfilMapper;
 import es.safareyes.swapcloset.modelos.*;
 import es.safareyes.swapcloset.repositorios.IEstilosRepository;
 import es.safareyes.swapcloset.repositorios.IPerfilRepository;
 import es.safareyes.swapcloset.repositorios.IPrendaRepository;
+import es.safareyes.swapcloset.repositorios.PerfilCoincidenteProyeccion;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -24,6 +27,7 @@ public class PerfilService implements IPerfilService {
     IPerfilRepository perfilRepository;
     IEstilosRepository estilosRepository;
     IPrendaRepository prendaRepository;
+    PerfilMapper perfilMapper;
 
     @Transactional
     public void modificarPerfil(Integer idUsuario, ModificarPerfilDTO dto) {
@@ -122,7 +126,7 @@ public class PerfilService implements IPerfilService {
         List<PrendasPerfilDTO> prendas = new ArrayList<>();
 
         for (Prenda prenda : perfil.getPrendas()) {
-            if (Boolean.TRUE.equals(prenda.getActivo()) && prenda.getEstado() != EstadoPrenda.BORRADOR) {
+            if (Boolean.TRUE.equals(prenda.getActivo()) && prenda.getEstado() != EstadoPrenda.BORRADOR && prenda.getEstado() != EstadoPrenda.RETIRADA) {
                 List<String> fotos = prendaRepository.fotos(prenda.getIdPrenda());
                 String fotoPrincipal = null;
 
@@ -152,5 +156,24 @@ public class PerfilService implements IPerfilService {
                 numeroResenas,
                 prendas
         );
+    }
+
+    @Transactional(readOnly = true)
+    public List<PerfilesAfinesDTO> perfilesAfines(Integer idUsuario){
+        Perfil perfil = perfilRepository.findByUsuario_IdUsuario(idUsuario).orElse(null);
+
+        if (perfil == null) {
+            throw new RelacionNoEncontrada("El perfil indicado no existe");
+        }
+
+        List<PerfilCoincidenteProyeccion> perfilesCoincidentes = perfilRepository.obtenerPerfilCoincidente(perfil.getIdPerfil());
+
+        List<PerfilesAfinesDTO> perfilesAfines = new ArrayList<>();
+
+        for (PerfilCoincidenteProyeccion coincidente : perfilesCoincidentes) {
+            perfilesAfines.add(perfilMapper.toDTO(coincidente));
+        }
+
+        return perfilesAfines;
     }
 }

@@ -1,10 +1,13 @@
 package es.safareyes.swapcloset.contoller;
 
 import es.safareyes.swapcloset.dto.ModificarPerfilDTO;
+import es.safareyes.swapcloset.dto.PerfilesAfinesDTO;
 import es.safareyes.swapcloset.dto.VisualizarPerfilDTO;
 import es.safareyes.swapcloset.service.IPerfilService;
 import jakarta.validation.Valid;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
 @RequestMapping("api/v1/usuarios")
@@ -23,5 +26,10 @@ public class PerfilController {
     @GetMapping("/{id}")
     public VisualizarPerfilDTO visualizarPerfil(@PathVariable Integer id){
         return perfilService.visualizarPerfil(id);
+    }
+
+    @GetMapping("/afines")
+    public List<PerfilesAfinesDTO> perfilesAfines(@RequestParam Integer idUsuario){
+        return perfilService.perfilesAfines(idUsuario);
     }
 }

@@ -14,8 +14,8 @@ public interface ICategoriaRepository extends JpaRepository<Categoria, Integer> 
             "SELECT " +
                 "c.nombre, " +
                 "COUNT(p.id) AS prendas_disponibles " +
-            "FROM categorias c " +
-                "LEFT JOIN prenda p ON p.id_categorias = c.id AND p.estado = 1 AND p.activo = TRUE " +
+            "FROM swapcloset.categorias c " +
+                "LEFT JOIN swapcloset.prenda p ON p.id_categorias = c.id AND p.estado = 1 AND p.activo = TRUE " +
             "GROUP BY c.id, c.nombre " +
             "ORDER BY c.nombre ASC",
              nativeQuery = true)

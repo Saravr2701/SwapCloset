@@ -8,5 +8,8 @@ public enum Color {
     BLANCO,
     NEGRO,
     AZUL,
-    MORADO
+    MORADO,
+    MARRON,
+    BEIGE,
+    NARANJA
 }

@@ -1,9 +1,11 @@
 package es.safareyes.swapcloset.repositorios;
 
 public interface PerfilCoincidenteProyeccion {
-    Integer getIdPerfilCoincidente();
+    Integer getIdCoincidente();
+    Integer getIdUsuario();
     String getNombreCompleto();
     String getCiudad();
+    Long getNumEstilosComunes();
+    Double getReputacion();
     String getEstilosComunes();
-    String getReputacion();
 }

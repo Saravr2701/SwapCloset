@@ -1,7 +1,9 @@
 package es.safareyes.swapcloset.mapper;
 
+import es.safareyes.swapcloset.dto.ConversacionDTO;
 import es.safareyes.swapcloset.dto.EnviarMensajeDTO;
 import es.safareyes.swapcloset.modelos.Mensaje;
+import es.safareyes.swapcloset.repositorios.ConversacionProyeccion;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 
@@ -16,4 +18,5 @@ public interface MensajeMapper {
     @Mapping(target = "contenido", source = "contenidoMensaje")
 
     Mensaje enviarMensaje(EnviarMensajeDTO dto);
+    ConversacionDTO toDTO(ConversacionProyeccion mensaje);
 }

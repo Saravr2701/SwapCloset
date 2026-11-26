@@ -1,83 +1,60 @@
 package es.safareyes.swapcloset.repositorios;
 
-import es.safareyes.swapcloset.dto.InformePublicaciones;
 import es.safareyes.swapcloset.modelos.Prenda;
-import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.data.jpa.repository.Modifying;
-import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.jpa.repository.*;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
+import java.time.LocalDate;
 import java.util.List;
+import java.util.Optional;
 
 @Repository
 
-public interface IPrendaRepository extends JpaRepository<Prenda, Integer> {
-    @Query(value =
-            "SELECT " +
-                "pr.id, " +
-                "pr.titulo, " +
-                "pr.descripcion, " +
-                "pr.marca, " +
-                "pr.talla, " +
-                "pr.condicion, " +
-                "pr.estado, " +
-                "pr.permite_intercambio, " +
-                "pr.permite_prestamo, " +
-                "pr.fecha_publicacion " +
-            "FROM prenda pr " +
-            "WHERE pr.estado = 1 " +
-            "ORDER BY pr.fecha_publicacion DESC",
-             nativeQuery = true)
-    List<ConsultaPrendasPaginadasProyeccion> obtenerPrendasPaginadas();
+public interface IPrendaRepository extends JpaRepository<Prenda, Integer>, JpaSpecificationExecutor<Prenda> {
+    @Query(value = """
+        SELECT
+            TO_CHAR(a.fecha, 'YYYY-MM') AS mes,
+            c.nombre AS categoria,
+            SUM(a.publicaciones) AS publicaciones,
+            SUM(a.intercambios) AS intercambios,
+            SUM(a.prestamos) AS prestamos
+        FROM (SELECT
+                p.fecha_publicacion AS fecha,
+                p.id_categorias AS id_categoria,
+                1 AS publicaciones,
+                0 AS intercambios,
+                0 AS prestamos,
+                NULL AS id_solicitud
+            FROM swapcloset.prenda p
+            WHERE p.estado != 0
 
-    @Query(value =
-            "SELECT " +
-                    "pr.id AS idPrenda, " +
-                    "pr.titulo, " +
-                    "pr.descripcion, " +
-                    "pr.marca, " +
-                    "pr.talla, " +
-                    "pr.condicion, " +
-                    "pr.estado, " +
-                    "pr.permite_intercambio, " +
-                    "pr.permite_prestamo, " +
-                    "pr.fecha_publicacion, " +
-                    "c.nombre, " +
-                    "p.id AS idPerfil, " +
-                    "CONCAT(p.nombre, ' ', p.ape1, ' ', p.ape2), " +
-                    "rep.reputacion, " +
-                    "STRING_AGG(f.url, ', ' ORDER BY f.orden) "+
-                    "FROM prenda pr " +
-                    "JOIN categorias c ON pr.id_categorias = c.id " +
-                    "JOIN perfil p ON pr.id_perfil = p.id " +
-                    "JOIN reputacion_perfil rep ON p.id = rep.id_perfil " +
-                    "JOIN foto f ON pr.id = f.id_prenda " +
-                    "WHERE pr.estado = 1 " +
-                    "GROUP BY pr.id, p.id, c.nombre, rep.reputacion " +
-                    "ORDER BY pr.fecha_publicacion DESC",
-            nativeQuery = true)
-    List<ConsultaPrendasCompletasProyeccion> obtenerPrendasCompletas();
+            UNION ALL
 
-    @Query(nativeQuery = true, value =
-            "SELECT " +
-                    "    TO_CHAR(actividad.fecha, 'YYYY-MM') AS mes, " +
-                    "    SUM(actividad.publicaciones) AS publicaciones, " +
-                    "    SUM(actividad.intercambios) AS intercambios, " +
-                    "    SUM(actividad.prestamos) AS prestamos " +
-                    "FROM ( " +
-                    "    SELECT fecha_publicacion AS fecha, 1 AS publicaciones, 0 AS intercambios, 0 AS prestamos " +
-                    "    FROM prenda " +
-                    "    UNION ALL " +
-                    "    SELECT fecha_creacion AS fecha, 0 AS publicaciones, " +
-                    "           CASE WHEN tipo_solicitud = 'INTERCAMBIO' THEN 1 ELSE 0 END AS intercambios, " +
-                    "           CASE WHEN tipo_solicitud = 'PRESTAMO' THEN 1 ELSE 0 END AS prestamos " +
-                    "    FROM solicitud " +
-                    ") actividad " +
-                    "GROUP BY TO_CHAR(actividad.fecha, 'YYYY-MM') " +
-                    "ORDER BY mes DESC"
-    )
-    List<InformePublicaciones> obtenerInformePublicaciones();
+            SELECT DISTINCT
+                s.fecha_creacion AS fecha,
+                p.id_categorias AS id_categoria,
+                0 AS publicaciones,
+                CASE WHEN s.tipo_solicitud = 1
+                    THEN 1 ELSE 0 END AS intercambios,
+                CASE WHEN s.tipo_solicitud = 0
+                    THEN 1 ELSE 0 END AS prestamos,
+                s.id AS id_solicitud
+            FROM swapcloset.solicitud s
+            JOIN swapcloset.solicitud_prenda sp
+                ON s.id = sp.id_solicitud
+            JOIN swapcloset.prenda p
+                ON sp.id_prenda = p.id
+            WHERE sp.rol_prenda = 0
+                AND s.estado IN (1, 5, 6)
+        ) a
+        JOIN swapcloset.categorias c
+            ON a.id_categoria = c.id
+        WHERE a.fecha BETWEEN :desde AND :hasta
+        GROUP BY TO_CHAR(a.fecha, 'YYYY-MM'), c.nombre
+        ORDER BY mes DESC, categoria ASC
+        """, nativeQuery = true)
+    List<InformePublicacionesProyeccion> obtenerInformePublicaciones(@Param("desde") LocalDate desde, @Param("hasta") LocalDate hasta);
 
     @Modifying
     @Query("UPDATE Solicitud s " +
@@ -94,4 +71,11 @@ public interface IPrendaRepository extends JpaRepository<Prenda, Integer> {
             "ORDER BY f.orden")
     List<String> fotos(@Param ("idPrenda") Integer idPrenda);
 
+    @EntityGraph(attributePaths = {
+            "fotos",
+            "perfil",
+            "perfil.usuario",
+            "perfil.valoraciones"
+    })
+    Optional<Prenda> findByIdPrenda(Integer id);
 }

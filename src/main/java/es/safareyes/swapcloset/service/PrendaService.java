@@ -1,22 +1,21 @@
 package es.safareyes.swapcloset.service;
 
-import es.safareyes.swapcloset.dto.DetallesUsuarioPrendaDTO;
-import es.safareyes.swapcloset.dto.ModificarPrendaDTO;
-import es.safareyes.swapcloset.dto.MostrarDetallesPrendasDTO;
-import es.safareyes.swapcloset.exception.BajaNoPermitida;
-import es.safareyes.swapcloset.exception.PrendaNoDisponible;
-import es.safareyes.swapcloset.exception.RelacionNoEncontrada;
-import es.safareyes.swapcloset.exception.SinTipoSolicitud;
+import es.safareyes.swapcloset.dto.*;
+import es.safareyes.swapcloset.exception.*;
 import es.safareyes.swapcloset.mapper.PrendaMapper;
-import es.safareyes.swapcloset.dto.CrearPrendaDTO;
 import es.safareyes.swapcloset.modelos.*;
 import es.safareyes.swapcloset.repositorios.*;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 
 import static java.lang.Boolean.FALSE;
@@ -30,7 +29,7 @@ public class PrendaService implements IPrendaService{
     private IPrendaRepository prendaRepository;
     private ICategoriaRepository categoriaRepository;
     private IPerfilRepository perfilRepository;
-    private ISolicitudPrendaRepository solicitudPrendaRepository;
+    private IUsuariosRepository usuariosRepository;
 
     public void crearPrenda(CrearPrendaDTO dto){
         Prenda nuevaPrenda = prendaMapper.toEntity(dto);
@@ -57,6 +56,11 @@ public class PrendaService implements IPrendaService{
         if (perfil == null){
             throw new RelacionNoEncontrada("El perfil indicado no existe");
         }
+
+        if(nuevaPrenda.getColor() == null){
+            throw new SinColor("La prenda necesita un color para poder ser creada");
+        }
+
         nuevaPrenda.setPerfil(perfil);
 
         nuevaPrenda.setFechaPublicacion(LocalDate.now());
@@ -130,6 +134,10 @@ public class PrendaService implements IPrendaService{
             prenda.setCondicion(dto.condicion());
         }
 
+        if (dto.color() != null){
+            prenda.setColor(dto.color());
+        }
+
         if (dto.permiteIntercambio() != null){
             prenda.setPermiteIntercambio(dto.permiteIntercambio());
         }
@@ -157,7 +165,7 @@ public class PrendaService implements IPrendaService{
 
     @Transactional(readOnly = true)
     public MostrarDetallesPrendasDTO mostrarDetallesPrenda(Integer id){
-        Prenda prenda = prendaRepository.findById(id).orElse(null);
+        Prenda prenda = prendaRepository.findByIdPrenda(id).orElse(null);
 
         if (prenda == null){
             throw new RelacionNoEncontrada("La prenda indicada no existe");
@@ -171,7 +179,20 @@ public class PrendaService implements IPrendaService{
             throw new PrendaNoDisponible("La prenda está en borrador asi que sus datos no son visibles");
         }
 
-        List<String> fotos = prendaRepository.fotos(id);
+        List<Foto> fotosOrdenadas = new ArrayList<>(prenda.getFotos());
+
+        fotosOrdenadas.sort(
+                Comparator.comparing(
+                        Foto::getOrden,
+                        Comparator.nullsLast(Comparator.naturalOrder())
+                )
+        );
+
+        List<String> fotos = new ArrayList<>();
+
+        for (Foto foto : fotosOrdenadas) {
+            fotos.add(foto.getUrlFoto());
+        }
 
         Perfil perfil = prenda.getPerfil();
 
@@ -205,5 +226,77 @@ public class PrendaService implements IPrendaService{
                 usuario
         );
         return dto;
+    }
+
+    @Transactional(readOnly = true)
+    public Page<PrendaTarjetaDTO> listarPrendas(Integer idCategoria,
+                                                String talla,
+                                                CondicionPrenda condicion,
+                                                Integer idEstilo,
+                                                String ciudad,
+                                                TipoSolicitud modalidad,
+                                                String marca,
+                                                Color color,
+                                                Pageable pageable) {
+
+                                            Specification<Prenda> filtros = PrendaSpecifications.filtrar(
+                                                    idCategoria,
+                                                    talla,
+                                                    condicion,
+                                                    idEstilo,
+                                                    ciudad,
+                                                    modalidad,
+                                                    marca,
+                                                    color
+                                            );
+
+                                            return prendaRepository.findAll(filtros, pageable)
+                                                    .map(prenda -> {
+                                                        List<String> fotos =
+                                                                prendaRepository.fotos(prenda.getIdPrenda());
+
+                                                        String fotoPrincipal = null;
+
+                                                        if (!fotos.isEmpty()) {
+                                                            fotoPrincipal = fotos.get(0);
+                                                        }
+
+                                                        return prendaMapper.aTarjeta(prenda, fotoPrincipal);
+                                                    });
+                                        }
+
+    @Transactional(readOnly = true)
+    public List<InformePublicacionesDTO> obtenerInformePublicaciones(Integer idUsuario, LocalDate desde, LocalDate hasta) {
+        Usuario usuario = usuariosRepository.findById(idUsuario).orElse(null);
+
+        if (usuario == null) {
+            throw new RelacionNoEncontrada("El usuario indicado no existe");
+        }
+
+        if (usuario.getRol() != RolUsuario.ADMINISTRADOR && usuario.getRol() != RolUsuario.MODERADOR) {
+            throw new AccesoInformeNoPermitido("Solo los administradores y moderadores pueden consultar el informe");
+        }
+
+        if (desde.isAfter(hasta)) {
+            throw new FechaNoValida("La fecha de inicio no puede ser posterior a la fecha de fin");
+        }
+
+        List<InformePublicacionesProyeccion> resultados =
+                prendaRepository.obtenerInformePublicaciones(desde, hasta);
+
+        List<InformePublicacionesDTO> informes = new ArrayList<>();
+
+        for (InformePublicacionesProyeccion resultado : resultados) {
+
+            InformePublicacionesDTO dto = new InformePublicacionesDTO(
+                    resultado.getMes(),
+                    resultado.getCategoria(),
+                    resultado.getPublicaciones(),
+                    resultado.getIntercambios(),
+                    resultado.getPrestamos()
+            );
+            informes.add(dto);
+        }
+        return informes;
     }
 }

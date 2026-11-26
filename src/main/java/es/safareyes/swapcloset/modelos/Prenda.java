@@ -32,6 +32,7 @@ public class Prenda {
     @Column(name = "talla")
     private String talla;
 
+    @Enumerated(EnumType.ORDINAL)
     @Column(name = "color")
     private Color color;
 

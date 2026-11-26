@@ -1,5 +1,6 @@
 package es.safareyes.swapcloset.dto;
 
+import es.safareyes.swapcloset.modelos.Color;
 import es.safareyes.swapcloset.modelos.CondicionPrenda;
 import jakarta.validation.constraints.*;
 
@@ -21,11 +22,14 @@ public record CrearPrendaDTO(
         @NotNull(message = "La condición es obligatoria")
         CondicionPrenda condicion,
 
-        @NotNull
+        @NotNull(message = "El intercambio es obligatorio")
         Boolean permiteIntercambio,
 
-        @NotNull
+        @NotNull(message = "El préstamo es obligatorio")
         Boolean permitePrestamo,
+
+        @NotNull(message = "El color es obligatorio")
+        Color color,
 
         @NotNull(message = "La categoría es obligatoria")
         @Positive(message = "El id de la categoría debe ser positivo")
