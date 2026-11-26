@@ -174,11 +174,13 @@ CREATE TABLE prenda (
 	descripcion VARCHAR (500),
 	marca VARCHAR (150),
 	talla VARCHAR (10),
+	color SMALLINT DEFAULT 0 NOT NULL CHECK (color BETWEEN 0 AND 10),
 	fecha_publicacion DATE DEFAULT CURRENT_DATE,
 	permite_intercambio BOOLEAN DEFAULT FALSE,
 	permite_prestamo BOOLEAN DEFAULT FALSE,
 	condicion SMALLINT CHECK (condicion BETWEEN 0 AND 3),
 	estado SMALLINT DEFAULT 0 NOT NULL CHECK (estado BETWEEN 0 AND 4),
+	activo BOOLEAN NOT NULL DEFAULT TRUE,
 	CONSTRAINT fk_prenda_categorias
         FOREIGN KEY (id_categorias) 
         REFERENCES categorias(id) 
@@ -312,7 +314,7 @@ INSERT INTO foto (id_prenda, url, orden) VALUES
 INSERT INTO solicitud (id_perfil, fecha_creacion, fecha_respuesta, fecha_inicio, fecha_fin, tipo_solicitud, estado) VALUES
 (3, '2026-09-20', '2026-09-21', NULL, NULL, 1, 1),
 (4, '2026-09-22', NULL, NULL, NULL, 0, 0),
-(7, '2026-09-21', '2026-09-22', '2026-09-23', '2026-10-05', 0, 1),
+(7, '2026-09-21', '2026-09-22', '2026-09-23', '2026-10-05', 0, 6),
 (6, '2026-09-24', '2026-09-24', NULL, NULL, 1, 2),
 (2, '2026-09-25', '2026-09-26', '2026-09-28', '2026-10-10', 0, 1),
 (3, '2026-09-27', NULL, NULL, NULL, 0, 0);
@@ -326,7 +328,23 @@ INSERT INTO solicitud_prenda (id_solicitud, id_prenda, rol_prenda) VALUES
 (5, 7, 0),
 (6, 4, 0);
 
-INSERT INTO mensaje (id_solicitud, fecha_envio, hora_envio, contenido) VALUES 
+INSERT INTO mensaje (id_solicitud, fecha_envio, hora_envio, contenido) VALUES
+
+(3, '2026-09-22', '10:15:00', 'Muchas gracias Laura. ¿La sudadera talla grande?'),
+(3, '2026-09-22', '10:18:00', 'Sí, es una talla S, pero tiene un corte bastante oversize.'),
+(3, '2026-09-22', '10:20:00', 'Perfecto, es justo lo que estaba buscando.'),
+(3, '2026-09-22', '10:23:00', '¿Para qué día la necesitas exactamente?'),
+(3, '2026-09-22', '10:25:00', 'La necesitaría desde mañana hasta el 5 de octubre.'),
+(3, '2026-09-22', '10:30:00', 'Por mí estupendo, no tengo pensado utilizarla durante esas fechas.'),
+(3, '2026-09-22', '10:32:00', '¿Tiene alguna mancha o algún desperfecto?'),
+(3, '2026-09-22', '10:35:00', 'No, está en muy buen estado. La he utilizado pocas veces.'),
+(3, '2026-09-22', '10:40:00', 'Genial, ¿cómo organizamos el envío?'),
+(3, '2026-09-22', '10:45:00', 'Puedo prepararla esta tarde y enviártela.'),
+(3, '2026-09-22', '10:48:00', 'Perfecto, te aviso cuando me llegue.'),
+(3, '2026-09-22', '10:50:00', 'Estupendo. Espero que te guste mucho.'),
+(3, '2026-09-23', '17:30:00', '¡Ya me ha llegado! Me queda genial y está en perfecto estado.'),
+(3, '2026-09-23', '17:45:00', '¡Qué bien! Disfrútala mucho y avísame cuando vayas a devolverla.'),
+(3, '2026-09-23', '17:50:00', 'Por supuesto. Muchas gracias por todo, Laura.'),
 (1, '2026-09-21', '09:15:00', 'Hola Carlos, quedamos el 1 si te viene bien'),
 (3, '2026-09-21', '14:20:00', 'Hola Laura Me encanta la sudadera oversize, ¿la tendrías disponible para dos semanas?'),
 (3, '2026-09-22', '10:05:00', 'Hola Elena Sí, sin problema. Te la preparo para envío.'),
@@ -334,9 +352,51 @@ INSERT INTO mensaje (id_solicitud, fecha_envio, hora_envio, contenido) VALUES
 (4, '2026-09-24', '18:10:00', 'Hola David, muchas gracias pero no estoy buscando calzado de esa talla ahora mismo.'),
 (1, '2026-09-20', '18:30:00', 'Hola Laura, la chaqueta la necesito para el día 3');
 
-INSERT INTO envia_mensaje (id_mensaje, id_perfil) VALUES (2, 2),(3, 7), (4, 2), (5, 6), (6, 4),(1, 3);
+INSERT INTO envia_mensaje (id_mensaje, id_perfil) VALUES
+(1, 7),
+(2, 2),
+(3, 7),
+(4, 2),
+(5, 7),
+(6, 2),
+(7, 7),
+(8, 2),
+(9, 7),
+(10, 2),
+(11, 7),
+(12, 2),
+(13, 7),
+(14, 2),
+(15, 7),
+(16, 2),
+(17, 7),
+(18, 2),
+(19, 6),
+(20, 4),
+(21, 3);
 
-INSERT INTO recibe_mensaje (id_mensaje, id_perfil) VALUES (2, 3),(3, 2), (4, 7), (5, 4), (6, 6),(1, 2);
+INSERT INTO recibe_mensaje (id_mensaje, id_perfil) VALUES
+(1, 2),
+(2, 7),
+(3, 2),
+(4, 7),
+(5, 2),
+(6, 7),
+(7, 2),
+(8, 7),
+(9, 2),
+(10, 7),
+(11, 2),
+(12, 7),
+(13, 2),
+(14, 7),
+(15, 2),
+(16, 3),
+(17, 2),
+(18, 7),
+(19, 4),
+(20, 6),
+(21, 2);
 
 INSERT INTO notificacion (id_perfil, tipo, mensaje, leida, fecha) VALUES
 (2, 1, 'Carlos M. te ha enviado una solicitud de intercambio.', FALSE, '2026-09-20'),
@@ -347,10 +407,6 @@ INSERT INTO notificacion (id_perfil, tipo, mensaje, leida, fecha) VALUES
 (7, 0, 'Carlos M. te ha enviado una solicitud de préstamo para "Blazer Negra Ajustada".', FALSE, '2026-09-27');
 
 INSERT INTO valoracion (id_solicitud, id_perfil, comentario, fecha, puntuacion) VALUES
-(1, 3, 'Excelente trato y la prenda estaba como en las fotos, aunque algo liosa la quedada', '2026-09-25', 4),
-(3, 7, 'La prenda llegó impecable y el proceso fue rapidísimo. ¡Repetiría sin duda!', '2026-09-27', 5),
-(3, 2, 'Elena cuidó la sudadera perfectamente y la devolución fue puntual.', '2026-09-28', 5),
-(2, 7, 'Prenda en mal estado, no repetiría', '2026-09-25', 1),
 (5, 2, 'Prenda impoluta, buen cliente', '2026-09-27', 5),
 (6, 6, 'Trato sin más y prenda en condiciones óptimas', '2026-09-28', 4);
 
